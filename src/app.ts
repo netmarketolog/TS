@@ -1,7 +1,13 @@
 class Key {
-  protected key: boolean;
-  constructor() {
-    this.key = true;
+  protected key: number;
+  protected pass: number[];
+  constructor(key: number) {
+    this.pass = [12345, 54321, 98123];
+    this.key = key;
+  }
+
+  public getStatus(): boolean {
+    return this.pass.includes(this.key);
   }
 }
 
@@ -27,7 +33,9 @@ abstract class House {
   public comeIn(person: Person) {
     console.log(person);
 
-    if (this.door) this.tenants.push(person);
+    if (this.door) {
+      this.tenants.push(person);
+    }
   }
 }
 
@@ -36,14 +44,16 @@ class MyHouse extends House {
     super(key);
   }
   public openDoor(key: Key): void {
-    console.log(key);
-
-    if (key) this.door = key;
-    console.log(this.door);
+    if (key.getStatus()) {
+      this.door = true;
+      console.log("Door is open");
+    } else {
+      console.log("Door is closed");
+    }
   }
 }
 
-const myKey = new Key();
+const myKey = new Key(12345);
 const myHouse = new MyHouse(myKey);
 
 myHouse.openDoor(myKey);
