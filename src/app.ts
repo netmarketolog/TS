@@ -1,20 +1,26 @@
 class Key {
-  protected key: number;
-  protected pass: number[];
-  constructor(key: number) {
-    this.pass = [12345, 54321, 98123];
-    this.key = key;
+  protected signature: number;
+  constructor() {
+    this.signature = this.generateSig();
   }
 
-  public getStatus(): boolean {
-    return this.pass.includes(this.key);
+  private generateSig(): number {
+    return Math.round(Math.random() * 100000);
+  }
+
+  public getSignature(): number {
+    return this.signature;
   }
 }
 
 class Person {
-  public name: string;
-  constructor(name: string) {
-    this.name = name;
+  protected key: Key;
+  constructor(key: Key) {
+    this.key = key;
+  }
+
+  public getKey(): Key {
+    return this.key;
   }
 }
 
@@ -31,10 +37,9 @@ abstract class House {
   public abstract openDoor(key: Key): void;
 
   public comeIn(person: Person) {
-    console.log(person);
-
     if (this.door) {
       this.tenants.push(person);
+      console.log("Come in home ");
     }
   }
 }
@@ -44,7 +49,10 @@ class MyHouse extends House {
     super(key);
   }
   public openDoor(key: Key): void {
-    if (key.getStatus()) {
+    console.log(MyHouse);
+    console.log(Key);
+
+    if (key.getSignature() === this.key.getSignature()) {
       this.door = true;
       console.log("Door is open");
     } else {
@@ -53,7 +61,10 @@ class MyHouse extends House {
   }
 }
 
-const myKey = new Key(12345);
+const myKey = new Key();
 const myHouse = new MyHouse(myKey);
+const person = new Person(myKey);
+const badKey = new Key();
 
-myHouse.openDoor(myKey);
+myHouse.openDoor(badKey);
+myHouse.comeIn(person);
